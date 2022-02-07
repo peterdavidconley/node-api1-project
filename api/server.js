@@ -12,10 +12,10 @@ server.post('/api/users', (req, res) => {
     let body = req.body
     if (!body.name) {
         res.status(400).json({ message: 'Please provide name and bio for the user'})
-    } else if (!body.weight) {
+    } else if (!body.bio) {
         res.status(400).json({ message: 'Please provide name and bio for the user'})
     } else {
-        usersModel.create(body)
+        usersModel.insert(body)
         .then(user => {
             res.status(201).json(user)
         })
