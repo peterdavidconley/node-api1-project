@@ -67,7 +67,22 @@ server.get('/api/users/:id', (req, res) => {
 // When the client makes a `DELETE` request to `/api/users/:id`:
 
 server.delete('/api/users/:id', (req, res) => {
-    res.json('Delete request for specific user')
+    let { id } = req.params
+    usersModel.remove(id)
+    .then(user => {
+        if (!user) {
+            res.status(404).json({
+                message: 'The user with the specified ID does not exist'
+            })
+        } else {
+            res.status(200).json(user)    
+        }
+    })
+    .catch(err => {
+        res.status(500).json({
+            message: 'The user could not be removed'
+        })
+    })
 })
 
 // When the client makes a `PUT` request to `/api/users/:id`:
