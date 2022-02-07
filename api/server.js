@@ -45,7 +45,23 @@ server.get('/api/users', (req, res) => {
 // When the client makes a `GET` request to `/api/users/:id`
 
 server.get('/api/users/:id', (req, res) => {
-    res.json('GET request for user by id')
+
+    const { id } = req.params
+    usersModel.findById(id)
+    .then(user => {
+        if (!user) {
+            res.status(404).json({
+                message: 'The user with the specified ID does not exist'
+            })
+        } else {
+            res.json(user)
+        }
+    })
+    .catch(err => {
+        res.status(500).json({
+            message: 'The user information could not be retrieved'
+        })
+    })
 })
 
 // When the client makes a `DELETE` request to `/api/users/:id`:
