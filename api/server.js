@@ -87,8 +87,30 @@ server.delete('/api/users/:id', (req, res) => {
 
 // When the client makes a `PUT` request to `/api/users/:id`:
 
-server.put('/api/users/:id', (req, res) => {
-    res.json('Update specific user')
+server.put('/api/users/:id', async (req, res) => {
+    let { id } = req.params
+
+    try {
+        let user = await usersModel.findById(id);
+        if (!user) {
+            res.status(404).json({ message: 'The user with the specified ID does not exist'})
+            return;
+        }
+        let body = req.body
+        if(!body.name) {
+            res.status(400).json({ message: 'Please provide name and bio for the user'})
+            return;
+        } else if (!body.bio) {
+            res.status(400).json({ message: 'Please provide name and bio for the user'})
+            return
+        }
+
+        let newUser = await usersModel.update(id, body)
+        res.status(200).json(newUser)
+    }
+    catch (err) {
+        res.status(500).json({ message: 'The user information could not be modified'})
+    }
 })
 
 module.exports = server; // EXPORT YOUR SERVER instead of {}
