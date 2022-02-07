@@ -31,7 +31,15 @@ server.post('/api/users', (req, res) => {
 // When the client makes a `GET` request to `/api/users`
 
 server.get('/api/users', (req, res) => {
-    res.json('GET request for all users')
+    usersModel.find()
+    .then(users => {
+        res.json(users)
+    })
+    .catch(err => {
+        res.status(500).json({
+            message: 'The users information could not be retrieved'
+        })
+    })
 })
 
 // When the client makes a `GET` request to `/api/users/:id`
