@@ -1,7 +1,7 @@
 // BUILD YOUR SERVER HERE
 
 const express = require('express');
-const users = require('./users/model');
+const usersModel = require('./users/model');
 const server = express();
 
 server.use(express.json())
@@ -9,7 +9,23 @@ server.use(express.json())
 // When the client makes a `POST` request to `/api/users`:
 
 server.post('/api/users', (req, res) => {
-    console.log('POST request')
+    let body = req.body
+    if (!body.name) {
+        res.status(400).json({ message: 'Please provide name and bio for the user'})
+    } else if (!body.weight) {
+        res.status(400).json({ message: 'Please provide name and bio for the user'})
+    } else {
+        usersModel.create(body)
+        .then(user => {
+            res.status(201).json(user)
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: 'There was an error while saving the user to the database'
+            })
+        })
+    }
+
 })
 
 // When the client makes a `GET` request to `/api/users`
